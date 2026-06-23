@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AB – Schülerinnen und Schüler unterrichten</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      font-size: 11pt;
+      background: #f5f3ee;
+      color: #1a1a1a;
+      padding: 20px;
+    }
+
+    .page {
+      max-width: 820px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px 50px 50px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* ── Header ── */
+    .header {
+      border-bottom: 3px solid #5c3d1e;
+      padding-bottom: 14px;
+      margin-bottom: 22px;
+    }
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .header h1 { font-size: 17pt; color: #5c3d1e; line-height: 1.3; }
+    .header h2 { font-size: 11pt; font-weight: normal; color: #444; margin-top: 3px; }
+
+    /* ── Sections ── */
+    h3 {
+      font-size: 11.5pt;
+      color: #5c3d1e;
+      margin: 26px 0 8px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #c9b08a;
+    }
+    p { margin-bottom: 8px; line-height: 1.55; }
+
+    /* ── Rückblick-Timeline ── */
+    .timeline-box {
+      border: 1.5px solid #c9b08a;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      background: #fffdf9;
+    }
+    .timeline-box .box-title { font-weight: bold; color: #333; margin-bottom: 10px; font-size: 10.5pt; }
+    .timeline { list-style: none; padding-left: 0; }
+    .timeline li { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+    .timeline-num {
+      background: #5c3d1e; color: white; border-radius: 50%;
+      width: 22px; height: 22px; min-width: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9pt; font-weight: bold; margin-top: 1px;
+    }
+    .timeline-content strong { display: block; margin-bottom: 1px; }
+    .timeline-content span { font-size: 9.5pt; color: #555; }
+
+    /* ── Info-Box ── */
+    .info-box {
+      border-left: 4px solid #5c3d1e;
+      background: #fdf8f1;
+      padding: 12px 16px;
+      margin: 14px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .info-box .box-title { font-weight: bold; color: #5c3d1e; margin-bottom: 6px; font-size: 10.5pt; }
+
+    /* ── Vorwissen Interactive ── */
+    .vw-section {
+      margin: 12px 0;
+    }
+    .vw-section-title {
+      font-size: 10pt;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 6px;
+      padding-left: 2px;
+    }
+    .vw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    /* Three-state chip: neutral → relevant (green) → nicht relevant (strikethrough gray) */
+    .chip {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1.5px solid #c9b08a;
+      background: white;
+      font-size: 9pt;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      line-height: 1.4;
+    }
+    .chip:hover { border-color: #5c3d1e; }
+    .chip.relevant {
+      background: #d4edda;
+      border-color: #3a7a3a;
+      color: #1a4a1a;
+      font-weight: bold;
+    }
+    .chip.relevant::before { content: "✓ "; }
+    .chip.irrelevant {
+      background: #f0f0f0;
+      border-color: #bbb;
+      color: #999;
+      text-decoration: line-through;
+    }
+
+    .chip-legend {
+      font-size: 8.5pt;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    .chip-legend span { margin-right: 12px; }
+    .chip-legend .leg-r { color: #2a6a2a; font-weight: bold; }
+    .chip-legend .leg-n { color: #999; text-decoration: line-through; }
+
+    /* ── Aufgaben ── */
+    .aufgabe {
+      background: #f9f6f1;
+      border: 1.5px solid #c9b08a;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .aufgabe-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+    .aufgabe-num {
+      background: #5c3d1e; color: white;
+      font-size: 9pt; font-weight: bold;
+      padding: 2px 8px; border-radius: 3px; white-space: nowrap;
+    }
+    .aufgabe-header strong { font-size: 11pt; }
+    .aufgabe p, .aufgabe ul { font-size: 10.5pt; }
+    .aufgabe ul { list-style: disc; padding-left: 18px; margin-top: 4px; }
+    .aufgabe ul li { margin-bottom: 3px; }
+
+    /* ── Schreiblinien ── */
+    .lines { margin-top: 8px; }
+    .line { border-bottom: 1px solid #ccc; height: 22px; margin-bottom: 2px; }
+
+    /* ── PDF-Link ── */
+    .pdf-link-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff8ee;
+      border: 2px solid #c9b08a;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 12px 0;
+    }
+    .pdf-icon { font-size: 32pt; line-height: 1; }
+    .pdf-link-box .pdf-text strong { display: block; font-size: 11pt; margin-bottom: 3px; color: #5c3d1e; }
+    .pdf-link-box .pdf-text span { font-size: 9.5pt; color: #666; }
+    .pdf-btn {
+      margin-top: 8px;
+      display: inline-block;
+      background: #5c3d1e;
+      color: white;
+      font-size: 9.5pt;
+      padding: 6px 14px;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .pdf-btn:hover { background: #7a5530; }
+
+    /* ── Methodenkarten & Phasen-Zuordnung ── */
+    .method-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .method-card {
+      border: 1.5px solid #c9b08a;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      font-size: 9.5pt;
+      background: white;
+    }
+    .method-card .icon { font-size: 18pt; display: block; margin-bottom: 4px; }
+    .method-card strong { display: block; margin-bottom: 2px; }
+    .method-card span { color: #666; font-size: 8.5pt; }
+
+    /* ── Phasen-Zuordnung ── */
+    .phases-intro {
+      font-size: 10pt;
+      margin: 10px 0 14px;
+      color: #333;
+    }
+
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 9.5pt;
+    }
+    .phase-table th {
+      background: #5c3d1e;
+      color: white;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: normal;
+    }
+    .phase-table td {
+      border: 1px solid #d0c0a0;
+      padding: 7px 10px;
+      vertical-align: top;
+    }
+    .phase-table tbody tr:nth-child(even) { background: #fdf8f1; }
+    .phase-table .phase-name { font-weight: bold; color: #5c3d1e; }
+    .phase-table .phase-goal { font-size: 8.5pt; color: #555; margin-top: 2px; }
+
+    /* Format-Chips in der Zuordnung */
+    .phase-formats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 28px;
+    }
+    .format-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid #c9b08a;
+      background: #fffdf9;
+      font-size: 8.5pt;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .format-chip:hover { border-color: #5c3d1e; }
+    .format-chip.selected {
+      background: #d4edda;
+      border-color: #3a7a3a;
+      color: #1a4a1a;
+      font-weight: bold;
+    }
+    .format-chip.selected::before { content: "✓ "; font-size: 7.5pt; }
+
+    .zuordnung-hint {
+      font-size: 8.5pt;
+      color: #777;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+
+    /* ── Schrittfolge ── */
+    .steps { counter-reset: step; list-style: none; padding-left: 0; margin: 10px 0; }
+    .steps li { counter-increment: step; display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+    .steps li::before {
+      content: counter(step);
+      background: #c9b08a; color: #3a2210;
+      border-radius: 50%; width: 22px; height: 22px; min-width: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9pt; font-weight: bold; margin-top: 1px;
+    }
+    .steps li .step-body strong { display: block; }
+    .steps li .step-body span { font-size: 9.5pt; color: #555; }
+
+    /* ── Planungsraster ── */
+    table.plan {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 9.5pt;
+    }
+    table.plan thead { background: #5c3d1e; color: white; }
+    table.plan th { padding: 7px 9px; text-align: left; font-weight: normal; }
+    table.plan td { border: 1px solid #d0c0a0; padding: 6px 9px; vertical-align: top; }
+    table.plan tbody tr:nth-child(even) { background: #fdf8f1; }
+    table.plan .write-cell { height: 36px; }
+
+    /* ── Reflexion ── */
+    .reflexion-box {
+      background: #eef6ee;
+      border-left: 4px solid #3a7a3a;
+      padding: 12px 16px;
+      border-radius: 0 4px 4px 0;
+      margin: 16px 0;
+    }
+    .reflexion-box .box-title { font-weight: bold; color: #2a5a2a; margin-bottom: 6px; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 30px;
+      border-top: 1px solid #c9b08a;
+      padding-top: 10px;
+      font-size: 8.5pt;
+      color: #888;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── Phasen-Spiel ── */
+    .game-intro {
+      font-size: 10pt; color: #333; margin-bottom: 14px; line-height: 1.55;
+    }
+    .cards-pool {
+      min-height: 60px;
+      display: flex; flex-wrap: wrap; gap: 7px;
+      padding: 12px; border-radius: 6px;
+      background: #f0ebe2; border: 1.5px dashed #b09060;
+      margin-bottom: 16px;
+    }
+    .cards-pool-label {
+      font-size: 8.5pt; color: #888; font-style: italic;
+      width: 100%; margin-bottom: 4px;
+    }
+    .goal-card {
+      display: inline-block;
+      padding: 6px 11px;
+      border-radius: 5px;
+      border: 1.5px solid #c9b08a;
+      background: white;
+      font-size: 9pt;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.15s, border-color 0.15s;
+      line-height: 1.4;
+    }
+    .goal-card:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.15); transform: translateY(-1px); }
+    .goal-card.selected {
+      background: #fff3cd; border-color: #e0a020;
+      box-shadow: 0 2px 8px rgba(224,160,32,0.4);
+      transform: translateY(-2px);
+    }
+    .goal-card.correct {
+      background: #d4edda; border-color: #3a7a3a; color: #1a4a1a; font-weight: bold;
+    }
+    .goal-card.wrong {
+      background: #f8d7da; border-color: #c0392b;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .phase-buckets {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      margin-bottom: 14px;
+    }
+    .phase-bucket {
+      border: 2px solid #c9b08a; border-radius: 7px; overflow: hidden;
+    }
+    .bucket-header {
+      background: #5c3d1e; color: white;
+      padding: 7px 10px; font-size: 9.5pt; font-weight: bold; text-align: center;
+    }
+    .bucket-drop {
+      min-height: 90px;
+      padding: 8px;
+      display: flex; flex-wrap: wrap; gap: 5px; align-content: flex-start;
+      background: #fffdf9;
+      transition: background 0.15s;
+    }
+    .bucket-drop.drag-over { background: #fff3cd; }
+    .bucket-drop.all-correct { background: #d4edda; }
+
+    .game-controls {
+      display: flex; gap: 10px; align-items: center; margin: 14px 0;
+    }
+    #check-btn {
+      background: #5c3d1e; color: white; border: none;
+      padding: 8px 20px; border-radius: 5px; font-size: 10pt;
+      cursor: pointer; font-family: Georgia, serif;
+      transition: background 0.15s;
+    }
+    #check-btn:hover { background: #7a5530; }
+    #check-btn:disabled { background: #b0a090; cursor: not-allowed; }
+    #reset-btn {
+      background: none; color: #7a5530; border: 1.5px solid #c9b08a;
+      padding: 7px 14px; border-radius: 5px; font-size: 9.5pt;
+      cursor: pointer; font-family: Georgia, serif;
+    }
+    #reset-btn:hover { border-color: #5c3d1e; }
+    #game-feedback {
+      font-size: 9.5pt; font-style: italic; color: #c0392b;
+    }
+
+    /* ── Success & Reveal ── */
+    .success-banner {
+      display: none;
+      background: linear-gradient(135deg, #d4edda, #a8d5a2);
+      border: 2px solid #3a7a3a; border-radius: 8px;
+      padding: 16px 20px; text-align: center; margin: 16px 0;
+    }
+    .success-banner.show { display: block; animation: fadeIn 0.5s ease; }
+    .success-banner .success-title { font-size: 13pt; font-weight: bold; color: #1a4a1a; }
+    .success-banner .success-sub { font-size: 9.5pt; color: #2a5a2a; margin-top: 4px; }
+    @keyframes fadeIn { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
+
+    #table-reveal {
+      display: none; opacity: 0;
+      transition: opacity 0.6s ease;
+      margin-top: 14px;
+    }
+    #table-reveal.show { display: block; }
+    #table-reveal.visible { opacity: 1; }
+
+    /* ── Phase-Tabelle (nach Spiel) ── */
+    .phase-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 9.5pt;
+    }
+    .phase-table th {
+      background: #5c3d1e; color: white;
+      padding: 7px 10px; text-align: left; font-weight: normal;
+    }
+    .phase-table td {
+      border: 1px solid #d0c0a0; padding: 7px 10px; vertical-align: top;
+    }
+    .phase-table tbody tr:nth-child(even) { background: #fdf8f1; }
+    .phase-table .phase-name { font-weight: bold; color: #5c3d1e; }
+    .phase-table .phase-goal { font-size: 8.5pt; color: #555; margin-top: 2px; }
+    .phase-formats {
+      display: flex; flex-wrap: wrap; gap: 5px; min-height: 28px;
+    }
+    .format-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 3px;
+      border: 1px solid #c9b08a; background: #fffdf9;
+      font-size: 8.5pt; cursor: pointer; user-select: none; transition: all 0.15s;
+    }
+    .format-chip:hover { border-color: #5c3d1e; }
+    .format-chip.selected {
+      background: #d4edda; border-color: #3a7a3a; color: #1a4a1a; font-weight: bold;
+    }
+    .format-chip.selected::before { content: "✓ "; font-size: 7.5pt; }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; padding: 20px 30px; }
+      .aufgabe { break-inside: avoid; }
+      #table-reveal { display: block !important; opacity: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-meta">
+      <span>Religion – Jg. 11 &nbsp;|&nbsp; Einheit: Herausforderung Bibel</span>
+      <span>Name: ___________________________&nbsp;&nbsp; Gruppe: ______</span>
+    </div>
+    <h1>Wir unterrichten die 6. Klasse –<br>Bibel kompakt erklärt</h1>
+    <h2>Arbeitsauftrag: Entwickelt eine eigene Unterrichtseinheit für Sechstklässler</h2>
+  </div>
+
+  <!-- ── RÜCKBLICK ── -->
+  <h3>Unsere Einheit – ein Rückblick</h3>
+  <p>In der Einheit <em>Herausforderung Bibel</em> habt ihr euch intensiv mit Entstehung, Überlieferung und Auslegung der Bibel beschäftigt:</p>
+
+  <div class="timeline-box">
+    <div class="box-title">Was wir in dieser Einheit erarbeitet haben</div>
+    <ul class="timeline">
+      <li>
+        <div class="timeline-num">1</div>
+        <div class="timeline-content">
+          <strong>Entstehung &amp; Überlieferung der Bibel</strong>
+          <span>Mündliche Tradition → Aufschreiben → Abschriften (Skriptorien) → Übersetzungen (LXX, Vulgata, Luther) → Buchdruck · Texte wurden bearbeitet, zusammengestellt, verändert</span>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-num">2</div>
+        <div class="timeline-content">
+          <strong>Kanonisierung &amp; Apokryphen</strong>
+          <span>Nicht alle Texte wurden in die Bibel aufgenommen · Der Kanon wurde erst im 4. Jh. n. Chr. festgelegt · Es gibt mehr Texte, als die Bibel enthält</span>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-num">3</div>
+        <div class="timeline-content">
+          <strong>Textsorten / Gattungen</strong>
+          <span>Die Bibel ist eine Bibliothek: Erzählung, Gesetz, Prophetie, Weisheitsliteratur, Psalm, Brief, Apokalypse – verschiedene Formen erfordern verschiedene Lesarten</span>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-num">4</div>
+        <div class="timeline-content">
+          <strong>Die Zwei-Quellen-Theorie</strong>
+          <span>Markus ist das älteste Evangelium · Matthäus und Lukas nutzen Mk <em>und</em> eine Logienquelle (Q) · Das erklärt Gemeinsamkeiten und Unterschiede der Synoptiker</span>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-num">5</div>
+        <div class="timeline-content">
+          <strong>Formgeschichte</strong>
+          <span>Texte entstanden in konkreten Gemeindesituationen (<em>Sitz im Leben</em>) · Formen wurden geprägt und weitergegeben – z.B. Gleichnisse als Predigthilfe</span>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-num">6</div>
+        <div class="timeline-content">
+          <strong>Redaktionsgeschichte &amp; historisch-kritische Exegese</strong>
+          <span>Evangelisten sind keine passiven Abschreiber – sie gestalten, betonen, kürzen · Die historisch-kritische Methode fragt nach Entstehung, Kontext und ursprünglicher Bedeutung</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── VORWISSEN ── -->
+  <h3>Was wissen die 6. Klässler – und was ist für unsere Einheit relevant?</h3>
+  <p>Bevor ihr eure Einheit entwickelt, müsst ihr die Lerngruppe kennen. Klickt die Punkte an: <strong style="color:#2a6a2a">grün = relevant für unsere Einheit</strong>, <strong style="color:#999">durchgestrichen = nicht passend</strong>. Ein weiterer Klick setzt zurück.</p>
+
+  <div class="chip-legend">
+    <span>(1× klicken: <span class="leg-r">relevant ✓</span>)</span>
+    <span>(2× klicken: <span class="leg-n">nicht relevant</span>)</span>
+    <span>(3× klicken: zurücksetzen)</span>
+  </div>
+
+  <!-- WAS WISSEN SIE -->
+  <div class="vw-section">
+    <div class="vw-section-title">✅ Das wissen Sechstklässler bereits</div>
+    <div class="vw-grid" id="grid-know">
+      <span class="chip">Die Bibel hat Altes und Neues Testament</span>
+      <span class="chip">AT und NT bestehen aus vielen Büchern</span>
+      <span class="chip">Bücher sind in Kapitel und Verse unterteilt</span>
+      <span class="chip">Wie man eine Bibelstelle nachschlägt (z.B. Mt 5,1)</span>
+      <span class="chip">Die Bibel wurde jahrelang von Hand abgeschrieben</span>
+      <span class="chip">Es gibt viele Bibelübersetzungen (Luther, Einheitsübersetzung …)</span>
+      <span class="chip">Die Bibel wurde von Gutenberg gedruckt</span>
+      <span class="chip">Das AT wurde auf Hebräisch geschrieben</span>
+      <span class="chip">Das NT wurde auf Griechisch geschrieben</span>
+      <span class="chip">Die Bibel ist das meistverkaufte Buch der Welt</span>
+      <span class="chip">Schöpfungserzählung (Gen 1–2)</span>
+      <span class="chip">Sündenfall &amp; Vertreibung aus dem Paradies</span>
+      <span class="chip">Noah und die Arche</span>
+      <span class="chip">Turmbau zu Babel</span>
+      <span class="chip">Abraham und der Bund mit Gott</span>
+      <span class="chip">Josef und seine Brüder</span>
+      <span class="chip">Moses &amp; Exodus (10 Plagen, Auszug aus Ägypten)</span>
+      <span class="chip">Die 10 Gebote</span>
+      <span class="chip">Davids Geschichte (Goliath, König)</span>
+      <span class="chip">Psalmen als Gebete und Lieder</span>
+      <span class="chip">Propheten haben Gottes Wort verkündet</span>
+      <span class="chip">Geburt Jesu (Bethlehem, Weihnachtsgeschichte)</span>
+      <span class="chip">Taufe Jesu durch Johannes</span>
+      <span class="chip">Bergpredigt und Gleichnisse Jesu</span>
+      <span class="chip">Wunder Jesu (Heilungen, Brotvermehrung)</span>
+      <span class="chip">Jesus hatte 12 Jünger</span>
+      <span class="chip">Passion, Kreuzigung und Auferstehung Jesu</span>
+      <span class="chip">Paulus schrieb Briefe an Gemeinden</span>
+      <span class="chip">Es gibt vier Evangelien: Matthäus, Markus, Lukas, Johannes</span>
+      <span class="chip">Judentum und Christentum teilen das AT</span>
+      <span class="chip">Die Bibel wird im Gottesdienst gelesen und gehört</span>
+      <span class="chip">Es gibt Bilder und Illustrationen in Bibeln</span>
+      <span class="chip">Die Bibel wurde zunächst mündlich weitergegeben</span>
+    </div>
+  </div>
+
+  <!-- WAS WISSEN SIE NICHT -->
+  <div class="vw-section">
+    <div class="vw-section-title">❓ Das wissen Sechstklässler (noch) nicht – was davon ist für unsere Einheit relevant?</div>
+    <div class="vw-grid" id="grid-notknow">
+      <span class="chip">Die vier Evangelien widersprechen sich in Details</span>
+      <span class="chip">Markus ist das älteste Evangelium (um 70 n. Chr.)</span>
+      <span class="chip">Es gibt eine Zwei-Quellen-Theorie</span>
+      <span class="chip">Matthäus und Lukas haben Markus als Vorlage genutzt</span>
+      <span class="chip">Die Logienquelle Q existiert nur als Rekonstruktion</span>
+      <span class="chip">Texte wurden über Jahrzehnte mündlich überliefert, bevor sie aufgeschrieben wurden</span>
+      <span class="chip">Jede Textgattung hat eigene Regeln und Merkmale</span>
+      <span class="chip">Der „Sitz im Leben" beeinflusst, wie Texte entstanden sind</span>
+      <span class="chip">Evangelisten sind Redaktoren – keine neutralen Berichterstatter</span>
+      <span class="chip">Jeder Evangelist verfolgt eine eigene theologische Perspektive</span>
+      <span class="chip">Historisch-kritische Exegese ist eine wissenschaftliche Methode</span>
+      <span class="chip">Es gibt Textkritik, Literarkritik, Formkritik, Redaktionskritik</span>
+      <span class="chip">Der Bibelkanon wurde im 4. Jahrhundert festgelegt</span>
+      <span class="chip">Es gibt Apokryphen – Texte, die nicht in die Bibel aufgenommen wurden</span>
+      <span class="chip">Die Septuaginta (LXX) ist eine griechische Übersetzung des AT</span>
+      <span class="chip">Die Vulgata ist die lateinische Bibelübersetzung (Hieronymus)</span>
+      <span class="chip">Bibelkritik ist keine Ablehnung, sondern wissenschaftliche Analyse</span>
+      <span class="chip">Gleichnisse sind keine Reportagen, sondern literarische Formen</span>
+      <span class="chip">Synoptischer Vergleich als exegetische Methode</span>
+      <span class="chip">Archäologische Funde helfen, Bibeltexte historisch einzuordnen</span>
+      <span class="chip">Abschriften enthalten Fehler und Abweichungen voneinander</span>
+      <span class="chip">Texte wurden bewusst verändert, ergänzt oder zusammengestellt</span>
+      <span class="chip">Die Bibel ist kein einheitliches Buch mit einer Botschaft, sondern eine Sammlung</span>
+      <span class="chip">Wunder-Erzählungen folgen einem festen Gattungsschema</span>
+      <span class="chip">Historisch-kritisches Lesen und wörtliches Lesen unterscheiden sich grundlegend</span>
+    </div>
+  </div>
+
+  <!-- ── AUFGABE 1: Reflexion ── -->
+  <h3>Aufgaben</h3>
+
+  <div class="aufgabe">
+    <div class="aufgabe-header">
+      <span class="aufgabe-num">Aufgabe 1</span>
+      <strong>Auswahl treffen – Was nehmen wir mit?</strong>
+    </div>
+    <p>Schaut euch eure Markierungen oben an. Welche zwei bis drei Erkenntnisse aus unserer Einheit wollt ihr in eurer Mini-Einheit für die 6. Klasse vermitteln? Welches Vorwissen der Sechstklässler knüpft ihr an?</p>
+    <p><strong>Unser Lernziel für die 6. Klasse:</strong> Am Ende der Stunde sollen die Schülerinnen und Schüler …</p>
+    <div class="lines">
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+  </div>
+
+  <!-- ── AUFGABE 2: Didaktische Reduktion (PDF) ── -->
+  <div class="aufgabe">
+    <div class="aufgabe-header">
+      <span class="aufgabe-num">Aufgabe 2</span>
+      <strong>Didaktische Reduktion</strong>
+    </div>
+    <p>Für jeden Themenbereich aus unserer Einheit müsst ihr entscheiden: Ist er für die 6. Klasse geeignet? Wenn ja – welche Aspekte? Nutzt das beiliegende Arbeitsblatt:</p>
+
+    <div class="pdf-link-box">
+      <div class="pdf-icon">📄</div>
+      <div class="pdf-text">
+        <strong>AB Didaktische Reduktion (PDF)</strong>
+        <span>Mit Platz für alle Themenbereiche, Unterpunkte und Begründungen</span><br>
+        <a class="pdf-btn" href="AB_Didaktische_Reduktion.pdf" target="_blank">📂 PDF öffnen</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AUFGABE 3: Unterrichtsphasen-Spiel + Methodenwahl ── -->
+  <div class="aufgabe">
+    <div class="aufgabe-header">
+      <span class="aufgabe-num">Aufgabe 3</span>
+      <strong>Methoden und Unterrichtsphasen</strong>
+    </div>
+
+    <p>Eine gute Unterrichtsstunde folgt einer klaren Struktur. Bevor ihr Formate wählt, müsst ihr wissen: <em>Was ist eigentlich das Ziel jeder Phase?</em></p>
+
+    <!-- ── SPIEL ── -->
+    <div style="background:#fdf8f1; border:1.5px solid #c9b08a; border-radius:6px; padding:14px 16px; margin:10px 0 0;">
+      <p style="font-weight:bold; font-size:10pt; color:#5c3d1e; margin-bottom:6px;">🎯 Zuordnungsspiel: Welches Ziel gehört zu welcher Phase?</p>
+      <p class="game-intro">Klickt eine Karte an (sie wird gelb markiert) und klickt dann auf die passende Phase – oder zieht die Karte direkt dorthin. Wenn alle Karten platziert sind, könnt ihr die Lösung prüfen.</p>
+
+      <!-- Kartenpool -->
+      <div class="cards-pool" id="cards-pool">
+        <div class="cards-pool-label">Zielkarten (noch nicht zugeordnet)</div>
+      </div>
+
+      <!-- Phasen-Eimer -->
+      <div class="phase-buckets">
+        <div class="phase-bucket">
+          <div class="bucket-header">Einstieg<br><span style="font-weight:normal; font-size:8pt">ca. 5–10 Min.</span></div>
+          <div class="bucket-drop" id="bucket-einstieg" data-phase="einstieg"></div>
+        </div>
+        <div class="phase-bucket">
+          <div class="bucket-header">Erarbeitung<br><span style="font-weight:normal; font-size:8pt">ca. 15–20 Min.</span></div>
+          <div class="bucket-drop" id="bucket-erarbeitung" data-phase="erarbeitung"></div>
+        </div>
+        <div class="phase-bucket">
+          <div class="bucket-header">Vertiefung / Übung<br><span style="font-weight:normal; font-size:8pt">ca. 10–15 Min.</span></div>
+          <div class="bucket-drop" id="bucket-vertiefung" data-phase="vertiefung"></div>
+        </div>
+        <div class="phase-bucket">
+          <div class="bucket-header">Sicherung<br><span style="font-weight:normal; font-size:8pt">ca. 5–10 Min.</span></div>
+          <div class="bucket-drop" id="bucket-sicherung" data-phase="sicherung"></div>
+        </div>
+      </div>
+
+      <div class="game-controls">
+        <button id="check-btn" disabled>Lösung prüfen</button>
+        <button id="reset-btn">Neu mischen</button>
+        <span id="game-feedback"></span>
+        <button id="teacher-btn" style="margin-left:auto; background:none; color:#aaa; border:1px dashed #ccc; padding:5px 10px; border-radius:4px; font-size:8.5pt; cursor:pointer; font-family:Georgia,serif;" title="Nur für Lehrkräfte">🔒 Lehrkraft</button>
+      </div>
+    </div>
+
+    <!-- ── ERFOLG & TABELLE (versteckt bis Spiel gelöst) ── -->
+    <div class="success-banner" id="success-banner">
+      <div class="success-title">✓ Sehr gut! Alle Ziele richtig zugeordnet.</div>
+      <div class="success-sub">Jetzt seht ihr die vollständige Übersicht – und könnt entscheiden, welche Formate ihr für welche Phase nutzt.</div>
+    </div>
+
+    <div id="table-reveal">
+      <p style="font-weight:bold; font-size:10pt; margin-bottom:6px;">Verfügbare Formate – was passt zu welcher Phase?</p>
+      <p style="font-size:9.5pt; color:#555; margin-bottom:10px;">Klickt die Formate an, die ihr für die jeweilige Phase nutzen wollt. Ihr müsst nicht alle verwenden – wählt bewusst, was zu eurem Lernziel und eurer Zielgruppe passt. Ein Format kann auch in mehreren Phasen sinnvoll sein.</p>
+
+      <table class="phase-table">
+        <thead>
+          <tr>
+            <th style="width:18%">Phase</th>
+            <th style="width:32%">Ziele dieser Phase</th>
+            <th>Formate, die wir nutzen wollen (anklicken)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="phase-name">Einstieg</div><div class="phase-goal">ca. 5–10 Min.</div></td>
+            <td><div style="font-size:8.5pt">Aufmerksamkeit wecken · Vorwissen aktivieren · Neugier erzeugen · Problemfrage aufwerfen · In das Thema einführen</div></td>
+            <td>
+              <div class="phase-formats">
+                <span class="format-chip">🎬 Video/Hörspiel</span>
+                <span class="format-chip">🖼️ Bildgeschichte</span>
+                <span class="format-chip">🎯 Quiz/Spiel</span>
+                <span class="format-chip">🎭 Rollenspiel</span>
+                <span class="format-chip">💬 Diskussion</span>
+                <span class="format-chip">📄 Arbeitsblatt</span>
+                <span class="format-chip">🖊️ Schreibaufgabe</span>
+                <span class="format-chip">📊 Vergleich</span>
+                <span class="format-chip">📋 Stationenlauf</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="phase-name">Erarbeitung</div><div class="phase-goal">ca. 15–20 Min.</div></td>
+            <td><div style="font-size:8.5pt">Neues Wissen erschließen · Selbstständig Informationen verarbeiten · Zusammenhänge verstehen · Aktiv mit dem Inhalt umgehen</div></td>
+            <td>
+              <div class="phase-formats">
+                <span class="format-chip">🎬 Video/Hörspiel</span>
+                <span class="format-chip">🖼️ Bildgeschichte</span>
+                <span class="format-chip">🎯 Quiz/Spiel</span>
+                <span class="format-chip">🎭 Rollenspiel</span>
+                <span class="format-chip">💬 Diskussion</span>
+                <span class="format-chip">📄 Arbeitsblatt</span>
+                <span class="format-chip">🖊️ Schreibaufgabe</span>
+                <span class="format-chip">📊 Vergleich</span>
+                <span class="format-chip">📋 Stationenlauf</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="phase-name">Vertiefung / Übung</div><div class="phase-goal">ca. 10–15 Min.</div></td>
+            <td><div style="font-size:8.5pt">Gelerntes anwenden · Verstehen vertiefen · Transfer auf neue Beispiele · Eigene Perspektive entwickeln · Üben und festigen</div></td>
+            <td>
+              <div class="phase-formats">
+                <span class="format-chip">🎬 Video/Hörspiel</span>
+                <span class="format-chip">🖼️ Bildgeschichte</span>
+                <span class="format-chip">🎯 Quiz/Spiel</span>
+                <span class="format-chip">🎭 Rollenspiel</span>
+                <span class="format-chip">💬 Diskussion</span>
+                <span class="format-chip">📄 Arbeitsblatt</span>
+                <span class="format-chip">🖊️ Schreibaufgabe</span>
+                <span class="format-chip">📊 Vergleich</span>
+                <span class="format-chip">📋 Stationenlauf</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="phase-name">Sicherung</div><div class="phase-goal">ca. 5–10 Min.</div></td>
+            <td><div style="font-size:8.5pt">Ergebnisse festhalten · Wesentliches bündeln · Lernziel überprüfen · Offene Fragen klären · Reflexion ermöglichen</div></td>
+            <td>
+              <div class="phase-formats">
+                <span class="format-chip">🎬 Video/Hörspiel</span>
+                <span class="format-chip">🖼️ Bildgeschichte</span>
+                <span class="format-chip">🎯 Quiz/Spiel</span>
+                <span class="format-chip">🎭 Rollenspiel</span>
+                <span class="format-chip">💬 Diskussion</span>
+                <span class="format-chip">📄 Arbeitsblatt</span>
+                <span class="format-chip">🖊️ Schreibaufgabe</span>
+                <span class="format-chip">📊 Vergleich</span>
+                <span class="format-chip">📋 Stationenlauf</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:12px; font-size:9.5pt; color:#444;"><strong>Unsere Gruppe plant folgende Formate zu nutzen:</strong></p>
+      <div class="lines"><div class="line"></div><div class="line"></div></div>
+      <p style="margin-top:10px; font-size:9.5pt; color:#444;"><strong>Begründung – warum passen diese Formate zu Zielgruppe und Lernziel?</strong></p>
+      <div class="lines"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+    </div>
+  </div>
+
+  <!-- ── SCHRITTFOLGE ── -->
+  <h3>Schrittfolge für die Entwicklung eurer Mini-Einheit</h3>
+
+  <ul class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Lernziel formulieren</strong>
+        <span>Was sollen die Sechstklässler am Ende wissen oder können? (→ Aufgabe 1)</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Didaktische Reduktion</strong>
+        <span>Welche Inhalte nehmt ihr mit, welche lasst ihr weg? (→ Aufgabe 2, PDF)</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Methoden und Phasen planen</strong>
+        <span>Welches Format passt zu welcher Phase? (→ Aufgabe 3)</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Material erstellen</strong>
+        <span>Erstellt euer Material. Achtet auf kurze Sätze und Anschaulichkeit. Testfrage: Versteht das eine 11-Jährige?</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Im Kurs vorstellen &amp; Feedback einholen</strong>
+        <span>Präsentiert euer Produkt (5 Min.). Die anderen geben Feedback: Verständlich? Inhaltlich korrekt?</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Überarbeiten &amp; abgeben</strong>
+        <span>Verarbeitet das Feedback und gebt das fertige Material ab.</span>
+      </div>
+    </li>
+  </ul>
+
+  <!-- ── PLANUNGSRASTER ── -->
+  <div class="aufgabe">
+    <div class="aufgabe-header">
+      <span class="aufgabe-num">Aufgabe 4</span>
+      <strong>Planungsraster – So ist unsere Mini-Einheit aufgebaut</strong>
+    </div>
+    <table class="plan">
+      <thead>
+        <tr>
+          <th style="width:15%">Phase</th>
+          <th style="width:35%">Was passiert? (Inhalt &amp; Aktivität)</th>
+          <th style="width:30%">Material / Format</th>
+          <th style="width:15%">Zeit (ca.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Einstieg</td><td class="write-cell"></td><td class="write-cell"></td><td class="write-cell"></td></tr>
+        <tr><td>Erarbeitung</td><td class="write-cell"></td><td class="write-cell"></td><td class="write-cell"></td></tr>
+        <tr><td>Vertiefung / Übung</td><td class="write-cell"></td><td class="write-cell"></td><td class="write-cell"></td></tr>
+        <tr><td>Sicherung</td><td class="write-cell"></td><td class="write-cell"></td><td class="write-cell"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── REFLEXION ── -->
+  <div class="reflexion-box">
+    <div class="box-title">Reflexion: Was habe ich durch das Erklären neu gelernt?</div>
+    <p style="font-size:10pt;">Wer lehrt, lernt doppelt. Was ist euch beim Erklären klar(er) geworden? Was war schwieriger als gedacht, altersgerecht zu formulieren?</p>
+    <div class="lines">
+      <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <span>Religion Jg. 11 &nbsp;|&nbsp; Herausforderung Bibel &nbsp;|&nbsp; Schülerinnen und Schüler unterrichten</span>
+    <span>Gymnasium Niedersachsen</span>
+  </div>
+
+</div>
+
+<script>
+  // ── 1. Vorwissen-Chips (3-Zustand) ──────────────────────────────────────
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (chip.classList.contains('relevant')) {
+        chip.classList.replace('relevant', 'irrelevant');
+      } else if (chip.classList.contains('irrelevant')) {
+        chip.classList.remove('irrelevant');
+      } else {
+        chip.classList.add('relevant');
+      }
+    });
+  });
+
+  // ── 2. Format-Chips in Tabelle (toggle) ─────────────────────────────────
+  document.querySelectorAll('.format-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+
+  // ── 3. Zuordnungsspiel ───────────────────────────────────────────────────
+  const GOALS = [
+    { id: 'g1',  text: 'Aufmerksamkeit wecken',                     phase: 'einstieg' },
+    { id: 'g2',  text: 'Vorwissen aktivieren',                       phase: 'einstieg' },
+    { id: 'g3',  text: 'Neugier erzeugen',                           phase: 'einstieg' },
+    { id: 'g4',  text: 'Problemfrage aufwerfen',                     phase: 'einstieg' },
+    { id: 'g5',  text: 'In das Thema einführen',                     phase: 'einstieg' },
+    { id: 'g6',  text: 'Neues Wissen erschließen',                   phase: 'erarbeitung' },
+    { id: 'g7',  text: 'Selbstständig Informationen verarbeiten',    phase: 'erarbeitung' },
+    { id: 'g8',  text: 'Zusammenhänge verstehen',                    phase: 'erarbeitung' },
+    { id: 'g9',  text: 'Aktiv mit dem Inhalt umgehen',               phase: 'erarbeitung' },
+    { id: 'g10', text: 'Gelerntes anwenden',                         phase: 'vertiefung' },
+    { id: 'g11', text: 'Transfer auf neue Beispiele',                phase: 'vertiefung' },
+    { id: 'g12', text: 'Eigene Perspektive entwickeln',              phase: 'vertiefung' },
+    { id: 'g13', text: 'Üben und festigen',                          phase: 'vertiefung' },
+    { id: 'g14', text: 'Ergebnisse festhalten',                      phase: 'sicherung' },
+    { id: 'g15', text: 'Wesentliches bündeln',                       phase: 'sicherung' },
+    { id: 'g16', text: 'Lernziel überprüfen',                        phase: 'sicherung' },
+    { id: 'g17', text: 'Offene Fragen klären',                       phase: 'sicherung' },
+    { id: 'g18', text: 'Reflexion ermöglichen',                      phase: 'sicherung' },
+  ];
+
+  let selectedCard = null;
+
+  function shuffle(arr) {
+    return [...arr].sort(() => Math.random() - 0.5);
+  }
+
+  function makeCard(goal) {
+    const el = document.createElement('span');
+    el.className = 'goal-card';
+    el.dataset.id = goal.id;
+    el.dataset.phase = goal.phase;
+    el.draggable = true;
+    el.textContent = goal.text;
+
+    // Click-to-select / click-to-return
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const inPool = el.parentElement.id === 'cards-pool';
+
+      if (el.classList.contains('correct')) return; // locked
+
+      if (inPool) {
+        // Select / deselect
+        if (selectedCard === el) {
+          el.classList.remove('selected');
+          selectedCard = null;
+        } else {
+          if (selectedCard) selectedCard.classList.remove('selected');
+          selectedCard = el;
+          el.classList.add('selected');
+        }
+      } else {
+        // Return to pool
+        el.classList.remove('selected', 'wrong');
+        document.getElementById('cards-pool').appendChild(el);
+        selectedCard = null;
+        updateCheckBtn();
+      }
+    });
+
+    // Drag start
+    el.addEventListener('dragstart', (e) => {
+      if (el.classList.contains('correct')) { e.preventDefault(); return; }
+      e.dataTransfer.setData('text/plain', goal.id);
+      setTimeout(() => el.classList.add('selected'), 0);
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('selected');
+      if (selectedCard === el) selectedCard = null;
+    });
+
+    return el;
+  }
+
+  function initGame() {
+    const pool = document.getElementById('cards-pool');
+    // Clear all buckets
+    document.querySelectorAll('.bucket-drop').forEach(b => {
+      [...b.querySelectorAll('.goal-card')].forEach(c => pool.appendChild(c));
+      b.classList.remove('all-correct');
+    });
+    // Remove existing cards & rebuild
+    [...pool.querySelectorAll('.goal-card')].forEach(c => c.remove());
+    shuffle(GOALS).forEach(g => pool.appendChild(makeCard(g)));
+    selectedCard = null;
+    document.getElementById('game-feedback').textContent = '';
+    updateCheckBtn();
+  }
+
+  function updateCheckBtn() {
+    const pool = document.getElementById('cards-pool');
+    const remaining = pool.querySelectorAll('.goal-card:not(.correct)').length;
+    document.getElementById('check-btn').disabled = remaining > 0
+      ? false  // allow checking partial — no, only when pool is empty:
+      : false;
+    // Only enable when pool has no non-correct cards
+    const poolCards = pool.querySelectorAll('.goal-card').length;
+    document.getElementById('check-btn').disabled = poolCards > 0;
+  }
+
+  // Bucket click: place selected card
+  document.querySelectorAll('.bucket-drop').forEach(bucket => {
+    bucket.addEventListener('click', () => {
+      if (!selectedCard || selectedCard.classList.contains('correct')) return;
+      selectedCard.classList.remove('selected', 'wrong');
+      bucket.appendChild(selectedCard);
+      selectedCard = null;
+      updateCheckBtn();
+    });
+
+    // Drag over / drop
+    bucket.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      bucket.classList.add('drag-over');
+    });
+    bucket.addEventListener('dragleave', () => bucket.classList.remove('drag-over'));
+    bucket.addEventListener('drop', (e) => {
+      e.preventDefault();
+      bucket.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      const card = document.querySelector(`.goal-card[data-id="${id}"]`);
+      if (card && !card.classList.contains('correct')) {
+        card.classList.remove('selected', 'wrong');
+        bucket.appendChild(card);
+        updateCheckBtn();
+      }
+    });
+  });
+
+  // Check button
+  document.getElementById('check-btn').addEventListener('click', () => {
+    let allCorrect = true;
+    document.querySelectorAll('.bucket-drop').forEach(bucket => {
+      const phase = bucket.dataset.phase;
+      bucket.querySelectorAll('.goal-card:not(.correct)').forEach(card => {
+        if (card.dataset.phase === phase) {
+          card.classList.add('correct');
+          card.classList.remove('wrong');
+        } else {
+          card.classList.add('wrong');
+          allCorrect = false;
+          // Return wrong cards to pool after animation
+          setTimeout(() => {
+            card.classList.remove('wrong', 'selected');
+            document.getElementById('cards-pool').appendChild(card);
+            updateCheckBtn();
+          }, 500);
+        }
+      });
+    });
+
+    if (allCorrect) {
+      revealTable();
+    } else {
+      document.getElementById('game-feedback').textContent =
+        'Fast! Falsch platzierte Karten kommen zurück – probiert es nochmal.';
+    }
+  });
+
+  function revealTable() {
+    document.getElementById('game-feedback').textContent = '';
+    const banner = document.getElementById('success-banner');
+    banner.classList.add('show');
+    const table = document.getElementById('table-reveal');
+    table.classList.add('show');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        table.classList.add('visible');
+        table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    document.getElementById('check-btn').disabled = true;
+    document.getElementById('reset-btn').disabled = true;
+    // Mark all buckets
+    document.querySelectorAll('.bucket-drop').forEach(b => b.classList.add('all-correct'));
+  }
+
+  // Reset button
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    document.getElementById('success-banner').classList.remove('show');
+    const table = document.getElementById('table-reveal');
+    table.classList.remove('visible', 'show');
+    initGame();
+  });
+
+  // ── Lehrkraft-Button ────────────────────────────────────────────────────
+  document.getElementById('teacher-btn').addEventListener('click', () => {
+    const pw = prompt('Lehrkraft-Passwort:');
+    if (pw === null) return; // cancelled
+    if (pw === 'Lehrer2025') {
+      revealTable();
+    } else {
+      alert('Passwort nicht korrekt.');
+    }
+  });
+
+  // Start game on load
+  initGame();
+</script>
+</body>
+</html>
